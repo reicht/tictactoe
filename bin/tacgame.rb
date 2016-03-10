@@ -2,6 +2,7 @@ class Game
   def initialize
     system('clear')
     line_bar(3)
+    @player_symbol = "@"
     user_check
     main_menu
   end
@@ -35,11 +36,13 @@ class Game
     line_bar(2)
     puts "        ARE YOU READY FOR TIC TAC TOE?!?!?"
     line_bar(2)
-    puts "    1 - New Game Versus AI(Inactive)"
+    puts "    1 - New Game Versus AI(BETA)"
     line_bar
-    puts "    2 - New Game Versus P2(Inactive)"
+    puts "    2 - New Game Versus P2(ALPHA)"
     line_bar
-    puts "    3 - Show Scoreboard"
+    puts "    3 - Show Scoreboard(Inactive)"
+    line_bar
+    puts "    4 - Player Options(Inactive)"
     line_bar
     puts "    X - E(X)it The Game"
     line_bar
@@ -49,6 +52,8 @@ class Game
     elsif next_step == 2
       multi_lobby
     elsif next_step == 3
+      puts "UNDEVELOPED"
+    elsif next_step == 4
       puts "UNDEVELOPED"
     else
       exit
@@ -72,34 +77,127 @@ class Game
       setup_board
     elsif rename.upcase == "Y"
       name = get_response("   New Name?")
+      setup_board
     end
   end
 
   def setup_board
-    line_one = "  1  "
-    line_two = "  2  "
-    line_three = "  3  "
-    line_four = "  4  "
-    line_five = "  5  "
-    line_six = "  6  "
-    line_seven = "  7  "
-    line_eight = "  8  "
-    line_nine = "  9  "
-    puts line_one
-    puts line_two
-    puts line_three
-    puts line_four
-    puts line_five
-    puts line_six
-    puts line_seven
-    puts line_eight
-    puts line_nine
+    @plot_one = "  1  "
+    @plot_two = "  2  "
+    @plot_three = "  3  "
+    @plot_four = "  4  "
+    @plot_five = "  5  "
+    @plot_six = "  6  "
+    @plot_seven = "  7  "
+    @plot_eight = "  8  "
+    @plot_nine = "  9  "
+    @placement_chart = []
+    9.times do |x|
+      @placement_chart[x-1] == false
+    end
+    game_play
+  end
+
+  def game_play
+    game_prompt
+    player_turn
+  end
+
+  def player_turn
+    game_prompt
+    puts "Currently " + @playername + "'s turn.'"
+    line_bar
+    puts "Which space would you like to claim? (1 - 9)"
+    move = get_response.to_i
+    case move
+    when 1
+      @plot_one = "  " + @player_symbol + "  "
+    when 2
+      @plot_two = "  " + @player_symbol + "  "
+    when 3
+      @plot_three = "  " + @player_symbol + "  "
+    when 4
+      @plot_four = "  " + @player_symbol + "  "
+    when 5
+      @plot_five = "  " + @player_symbol + "  "
+    when 6
+      @plot_six = "  " + @player_symbol + "  "
+    when 7
+      @plot_seven = "  " + @player_symbol + "  "
+    when 8
+      @plot_eight = "  " + @player_symbol + "  "
+    when 9
+      @plot_nine = "  " + @player_symbol + "  "
+    end
+    computer_turn
+  end
+
+  def computer_turn
+    game_prompt
+    puts "Currently Computer's turn.'"
+    line_bar
+    puts "Anything to continue"
+    move = rand(1..9)
+    case move
+    when 1
+      @plot_one = "  " + "$" + "  "
+    when 2
+      @plot_two = "  " + "$" + "  "
+    when 3
+      @plot_three = "  " + "$" + "  "
+    when 4
+      @plot_four = "  " + "$" + "  "
+    when 5
+      @plot_five = "  " + "$" + "  "
+    when 6
+      @plot_six = "  " + "$" + "  "
+    when 7
+      @plot_seven = "  " + "$" + "  "
+    when 8
+      @plot_eight = "  " + "$" + "  "
+    when 9
+      @plot_nine = "  " + "$" + "  "
+    end
+    player_turn
+  end
+
+  def game_prompt
+    system ('clear')
+    line_bar(2)
+    puts "PLAYING TIC TAC TOE"
+    line_bar
+    place_space
+    print @plot_one
+    place_space
+    print @plot_two
+    place_space
+    puts @plot_three
+    puts
+    place_space
+    print @plot_four
+    place_space
+    print @plot_five
+    place_space
+    puts @plot_six
+    puts
+    place_space
+    print @plot_seven
+    place_space
+    print @plot_eight
+    place_space
+    puts @plot_nine
+    puts
+    line_bar(2)
   end
 
   def line_bar(num = 1)
     num.times do
       puts "-" * 50
     end
+  end
+
+  def place_space
+    print " " * 8
   end
 
   def get_response(prompt = "")
@@ -109,9 +207,31 @@ class Game
 end
 
 class Player
-  attr_accessor
-  def initialize(name)
 
+  def initialize
+
+  end
+
+  def identify_user
+    @playername = ""
+    @playername = File::read( "playername.txt" )
+    if @playername == ""
+      print "No player detected, please enter name:"
+      @playername = get_response
+      File::open( 'playername.txt', 'w' ) do |f|
+        f << @playername
+      end
+    else
+      puts "Currently playing as: " + @playername
+      puts "Would you like to change the name? (Y)es or (N)o"
+      rename = get_response
+      if rename.upcase == "Y"
+        @playername = get_response("   New Name?")
+        File::open( 'playername.txt', 'w' ) do |f|
+          f << @playername
+        end
+      end
+    end
   end
 end
 
