@@ -93,7 +93,7 @@ class Game
     @plot_nine = "  9  "
     @placement_chart = []
     9.times do |x|
-      @placement_chart[x-1] == false
+      @placement_chart[x] = false
     end
     game_play
   end
@@ -109,24 +109,23 @@ class Game
     line_bar
     puts "Which space would you like to claim? (1 - 9)"
     move = get_response.to_i
-    case move
-    when 1
+    if move == 1
       @plot_one = "  " + @player_symbol + "  "
-    when 2
+    elsif move == 2
       @plot_two = "  " + @player_symbol + "  "
-    when 3
+    elsif move == 3
       @plot_three = "  " + @player_symbol + "  "
-    when 4
+    elsif move == 4
       @plot_four = "  " + @player_symbol + "  "
-    when 5
+    elsif move == 5
       @plot_five = "  " + @player_symbol + "  "
-    when 6
+    elsif move == 6
       @plot_six = "  " + @player_symbol + "  "
-    when 7
+    elsif move == 7
       @plot_seven = "  " + @player_symbol + "  "
-    when 8
+    elsif move == 8
       @plot_eight = "  " + @player_symbol + "  "
-    when 9
+    elsif move == 9
       @plot_nine = "  " + @player_symbol + "  "
     end
     computer_turn
