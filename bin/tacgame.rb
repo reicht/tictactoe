@@ -6,10 +6,9 @@ class Game
     line_bar(3)
     @player_symbol = "@"
     @host = Player.new("playerone")
+    @turn_marker = true
     main_menu
-
   end
-
   def main_menu
     system ('clear')
     line_bar
@@ -72,10 +71,10 @@ class Game
     9.times do |x|
       @placement_chart[x] = 0
     end
-    host_turn
+    human_turn(@turn_marker)
   end
 
-  def host_turn
+  def human_turn(player)
     game_prompt
     puts "Currently " + @host.playername.to_s + "'s turn.'"
     line_bar
@@ -113,6 +112,49 @@ class Game
       puts "INVALID SELECTION"
       interceptor
       player_turn
+    end
+    evaluate_board("host")
+    computer_turn
+  end
+
+  def guest_turn
+    game_prompt
+    puts "Currently " + @guest.playername.to_s + "'s turn.'"
+    line_bar
+    puts "Which space would you like to claim? (1 - 9)"
+    line_bar
+    move = get_response.to_i
+    if move == 1 && @placement_chart[0] == 0
+      @plot_one = "  " + @player_symbol + "  "
+      @placement_chart[0] += -1
+    elsif move == 2 && @placement_chart[1] == 0
+      @plot_two = "  " + @player_symbol + "  "
+      @placement_chart[1] += -1
+    elsif move == 3 && @placement_chart[2] == 0
+      @plot_three = "  " + @player_symbol + "  "
+      @placement_chart[2] += -1
+    elsif move == 4 && @placement_chart[3] == 0
+      @plot_four = "  " + @player_symbol + "  "
+      @placement_chart[3] += -1
+    elsif move == 5 && @placement_chart[4] == 0
+      @plot_five = "  " + @player_symbol + "  "
+      @placement_chart[4] += -1
+    elsif move == 6 && @placement_chart[5] == 0
+      @plot_six = "  " + @player_symbol + "  "
+      @placement_chart[5] += -1
+    elsif move == 7 && @placement_chart[6] == 0
+      @plot_seven = "  " + @player_symbol + "  "
+      @placement_chart[6] += -1
+    elsif move == 8 && @placement_chart[7] == 0
+      @plot_eight = "  " + @player_symbol + "  "
+      @placement_chart[7] += -1
+    elsif move == 9 && @placement_chart[8] == 0
+      @plot_nine = "  " + @player_symbol + "  "
+      @placement_chart[8] += -1
+    else
+      puts "INVALID SELECTION"
+      interceptor
+      guest_turn
     end
     evaluate_board("host")
     computer_turn
