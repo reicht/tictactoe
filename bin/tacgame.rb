@@ -3,15 +3,15 @@ class Game
     system('clear')
     line_bar(3)
     @player_symbol = "@"
-    Player.new("playerone")
+    @host = Player.new("playerone")
     main_menu
-    @playerone = playerone.name
+
   end
 
   def main_menu
     system ('clear')
     line_bar
-    puts "   Welcome back " + @playerone.to_s + "!"
+    puts "   Welcome back " + @host.playername.to_s + "!"
     line_bar(2)
     puts "        ARE YOU READY FOR TIC TAC TOE?!?!?"
     line_bar(2)
@@ -72,7 +72,7 @@ class Game
     @plot_nine = "  9  "
     @placement_chart = []
     9.times do |x|
-      @placement_chart[x] = false
+      @placement_chart[x] = 0
     end
     game_play
   end
@@ -84,43 +84,44 @@ class Game
 
   def player_turn
     game_prompt
-    puts "Currently " + @playerone.to_s + "'s turn.'"
+    puts "Currently " + @host.playername.to_s + "'s turn.'"
     line_bar
     puts "Which space would you like to claim? (1 - 9)"
     line_bar
     move = get_response.to_i
-    if move == 1 && @placement_chart[0] == false
+    if move == 1 && @placement_chart[0] == 0
       @plot_one = "  " + @player_symbol + "  "
-      @placement_chart[0] = true
-    elsif move == 2 && @placement_chart[1] == false
+      @placement_chart[0] += 1
+    elsif move == 2 && @placement_chart[1] == 0
       @plot_two = "  " + @player_symbol + "  "
-      @placement_chart[1] = true
-    elsif move == 3 && @placement_chart[2] == false
+      @placement_chart[1] += 1
+    elsif move == 3 && @placement_chart[2] == 0
       @plot_three = "  " + @player_symbol + "  "
-      @placement_chart[2] = true
-    elsif move == 4 && @placement_chart[3] == false
+      @placement_chart[2] += 1
+    elsif move == 4 && @placement_chart[3] == 0
       @plot_four = "  " + @player_symbol + "  "
-      @placement_chart[3] = true
-    elsif move == 5 && @placement_chart[4] == false
+      @placement_chart[3] += 1
+    elsif move == 5 && @placement_chart[4] == 0
       @plot_five = "  " + @player_symbol + "  "
-      @placement_chart[4] = true
-    elsif move == 6 && @placement_chart[5] == false
+      @placement_chart[4] += 1
+    elsif move == 6 && @placement_chart[5] == 0
       @plot_six = "  " + @player_symbol + "  "
-      @placement_chart[5] = true
-    elsif move == 7 && @placement_chart[6] == false
+      @placement_chart[5] += 1
+    elsif move == 7 && @placement_chart[6] == 0
       @plot_seven = "  " + @player_symbol + "  "
-      @placement_chart[6] = true
-    elsif move == 8 && @placement_chart[7] == false
+      @placement_chart[6] += 1
+    elsif move == 8 && @placement_chart[7] == 0
       @plot_eight = "  " + @player_symbol + "  "
-      @placement_chart[7] = true
-    elsif move == 9 && @placement_chart[8] == false
+      @placement_chart[7] += 1
+    elsif move == 9 && @placement_chart[8] == 0
       @plot_nine = "  " + @player_symbol + "  "
-      @placement_chart[8] = true
+      @placement_chart[8] += 1
     else
       puts "INVALID SELECTION"
       interceptor
       player_turn
     end
+    evaluate_board
     computer_turn
   end
 
@@ -129,41 +130,41 @@ class Game
     puts "Currently Computer's turn.'"
     line_bar
     move = rand(1..9)
-    if move == 1 && @placement_chart[0] == false
+    if move == 1 && @placement_chart[0] == 0
       @plot_one = "  " + "$" + "  "
-      @placement_chart[0] = true
+      @placement_chart[0] -= 1
       puts "Computer chooses place " + move.to_s
-    elsif move == 2 && @placement_chart[1] == false
+    elsif move == 2 && @placement_chart[1] == 0
       @plot_two = "  " + "$" + "  "
-      @placement_chart[1] = true
+      @placement_chart[1] -= 1
       puts "Computer chooses place " + move.to_s
-    elsif move == 3 && @placement_chart[2] == false
+    elsif move == 3 && @placement_chart[2] == 0
       @plot_three = "  " + "$" + "  "
-      @placement_chart[2] = true
+      @placement_chart[2] -= 1
       puts "Computer chooses place " + move.to_s
-    elsif move == 4 && @placement_chart[3] == false
+    elsif move == 4 && @placement_chart[3] == 0
       @plot_four = "  " + "$" + "  "
-      @placement_chart[3] = true
+      @placement_chart[3] -= 1
       puts "Computer chooses place " + move.to_s
-    elsif move == 5 && @placement_chart[4] == false
+    elsif move == 5 && @placement_chart[4] == 0
       @plot_five = "  " + "$" + "  "
-      @placement_chart[4] = true
+      @placement_chart[4] -= 1
       puts "Computer chooses place " + move.to_s
-    elsif move == 6 && @placement_chart[5] == false
+    elsif move == 6 && @placement_chart[5] == 0
       @plot_six = "  " + "$" + "  "
-      @placement_chart[5] = true
+      @placement_chart[5] -= 1
       puts "Computer chooses place " + move.to_s
-    elsif move == 7 && @placement_chart[6] == false
+    elsif move == 7 && @placement_chart[6] == 0
       @plot_seven = "  " + "$" + "  "
-      @placement_chart[6] = true
+      @placement_chart[6] -= 1
       puts "Computer chooses place " + move.to_s
-    elsif move == 8 && @placement_chart[7] == false
+    elsif move == 8 && @placement_chart[7] == 0
       @plot_eight = "  " + "$" + "  "
-      @placement_chart[7] = true
+      @placement_chart[7] -= 1
       puts "Computer chooses place " + move.to_s
-    elsif move == 9 && @placement_chart[8] == false
+    elsif move == 9 && @placement_chart[8] == 0
       @plot_nine = "  " + "$" + "  "
-      @placement_chart[8] = true
+      @placement_chart[8] -= 1
       puts "Computer chooses place " + move.to_s
     else
       computer_turn
@@ -174,6 +175,54 @@ class Game
   end
 
   def evaluate_board
+    if @placement_chart[0] == 1 &&
+        @placement_chart[1] == 1 &&
+        @placement_chart[2] == 1
+        puts "PLAYER WIN"
+        interceptor
+
+    elsif @placement_chart[3] == 1 &&
+        @placement_chart[4] == 1 &&
+        @placement_chart[5] == 1
+        puts "PLAYER WIN"
+        interceptor
+
+    elsif @placement_chart[6] == 1 &&
+        @placement_chart[7] == 1 &&
+        @placement_chart[8] == 1
+        puts "PLAYER WIN"
+        interceptor
+
+    elsif @placement_chart[0] == 1 &&
+        @placement_chart[3] == 1 &&
+        @placement_chart[6] == 1
+        puts "PLAYER WIN"
+        interceptor
+
+    elsif @placement_chart[1] == 1 &&
+        @placement_chart[4] == 1 &&
+        @placement_chart[7] == 1
+        puts "PLAYER WIN"
+        interceptor
+
+    elsif @placement_chart[2] == 1 &&
+        @placement_chart[5] == 1 &&
+        @placement_chart[8] == 1
+        puts "PLAYER WIN"
+        interceptor
+
+    elsif @placement_chart[0] == 1 &&
+        @placement_chart[4] == 1 &&
+        @placement_chart[8] == 1
+        puts "PLAYER WIN"
+        interceptor
+
+    elsif @placement_chart[2] == 1 &&
+        @placement_chart[4] == 1 &&
+        @placement_chart[6] == 1
+        puts "PLAYER WIN"
+        interceptor
+    end
 
   end
 
@@ -229,11 +278,12 @@ end
 
 class Player
 
-  attr_accessor :playername, :score
+  attr_accessor :playername, :score, :symbol
 
   def initialize(name = "")
     @playername = name
     identify_user
+
 
   end
 
