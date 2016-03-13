@@ -1,3 +1,5 @@
+require_relative '../lib/player.rb'
+
 class Game
   def initialize
     system('clear')
@@ -27,8 +29,10 @@ class Game
     line_bar
     next_step = get_response.to_i
     if next_step == 1
+      @versus_ai = true
       setup_board
     elsif next_step == 2
+      @versus_ai = false
       multi_lobby
     elsif next_step == 3
       puts "UNDEVELOPED"
@@ -46,18 +50,12 @@ class Game
     puts "Entering Multi-Player Mode"
     line_bar
     puts
-    puts "Second player is currently: "
+    puts "Configuring Player Two"
     puts
     line_bar
     puts
-    puts "Change Player 2 name? (Y)es or (N)o"
-    rename = get_response("     Change name?")
-    if rename.upcase == "N"
-      setup_board
-    elsif rename.upcase == "Y"
-      name = get_response("   New Name?")
-      setup_board
-    end
+    @guest = Player.new("playertwo")
+    setup_board
   end
 
   def setup_board
@@ -74,15 +72,10 @@ class Game
     9.times do |x|
       @placement_chart[x] = 0
     end
-    game_play
+    host_turn
   end
 
-  def game_play
-    game_prompt
-    player_turn
-  end
-
-  def player_turn
+  def host_turn
     game_prompt
     puts "Currently " + @host.playername.to_s + "'s turn.'"
     line_bar
@@ -121,7 +114,7 @@ class Game
       interceptor
       player_turn
     end
-    evaluate_board
+    evaluate_board("host")
     computer_turn
   end
 
@@ -171,57 +164,55 @@ class Game
     end
     line_bar
     interceptor
-    player_turn
+    evaluate_board("bot")
+    host_turn
   end
 
-  def evaluate_board
-    if @placement_chart[0] == 1 &&
-        @placement_chart[1] == 1 &&
-        @placement_chart[2] == 1
-        puts "PLAYER WIN"
-        interceptor
+  def evaluate_board(player)
+    if player == "host"
+      target = 1
+    else
+      target = -1
+    end
+    if @placement_chart[0] == target &&
+        @placement_chart[1] == target &&
+        @placement_chart[2] == target
+        victory_screen(player)
 
-    elsif @placement_chart[3] == 1 &&
-        @placement_chart[4] == 1 &&
-        @placement_chart[5] == 1
-        puts "PLAYER WIN"
-        interceptor
+    elsif @placement_chart[3] == target &&
+        @placement_chart[4] == target &&
+        @placement_chart[5] == target
+        victory_screen(player)
 
-    elsif @placement_chart[6] == 1 &&
-        @placement_chart[7] == 1 &&
-        @placement_chart[8] == 1
-        puts "PLAYER WIN"
-        interceptor
+    elsif @placement_chart[6] == target &&
+        @placement_chart[7] == target &&
+        @placement_chart[8] == target
+        victory_screen(player)
 
-    elsif @placement_chart[0] == 1 &&
-        @placement_chart[3] == 1 &&
-        @placement_chart[6] == 1
-        puts "PLAYER WIN"
-        interceptor
+    elsif @placement_chart[0] == target &&
+        @placement_chart[3] == target &&
+        @placement_chart[6] == target
+        victory_screen(player)
 
-    elsif @placement_chart[1] == 1 &&
-        @placement_chart[4] == 1 &&
-        @placement_chart[7] == 1
-        puts "PLAYER WIN"
-        interceptor
+    elsif @placement_chart[1] == target &&
+        @placement_chart[4] == target &&
+        @placement_chart[7] == target
+        victory_screen(player)
 
-    elsif @placement_chart[2] == 1 &&
-        @placement_chart[5] == 1 &&
-        @placement_chart[8] == 1
-        puts "PLAYER WIN"
-        interceptor
+    elsif @placement_chart[2] == target &&
+        @placement_chart[5] == target &&
+        @placement_chart[8] == target
+        victory_screen(player)
 
-    elsif @placement_chart[0] == 1 &&
-        @placement_chart[4] == 1 &&
-        @placement_chart[8] == 1
-        puts "PLAYER WIN"
-        interceptor
+    elsif @placement_chart[0] == target &&
+        @placement_chart[4] == target &&
+        @placement_chart[8] == target
+        victory_screen(player)
 
-    elsif @placement_chart[2] == 1 &&
-        @placement_chart[4] == 1 &&
-        @placement_chart[6] == 1
-        puts "PLAYER WIN"
-        interceptor
+    elsif @placement_chart[2] == target &&
+        @placement_chart[4] == target &&
+        @placement_chart[6] == target
+        victory_screen(player)
     end
 
   end
@@ -255,6 +246,28 @@ class Game
     line_bar(2)
   end
 
+  def victory_screen(winner)
+    system ('clear')
+    line_bar(3)
+    print " " * 12
+    if winner == "host"
+      print @host.playername
+    elsif winner == "guest"
+      print @guest.playername
+    elsif winner == "bot"
+      print "Computer"
+    else
+      print "UNNAMED"
+    end
+    puts " WINS THE GAME!!!"
+    line_bar(4)
+    print " " * 6
+    puts "LOGGING SCORES AND RETURNING TO MENU"
+    line_bar(3)
+    interceptor
+    main_menu
+  end
+
   def interceptor
     puts "Press enter to continue"
     get_response
@@ -276,43 +289,5 @@ class Game
   end
 end
 
-class Player
-
-  attr_accessor :playername, :score, :symbol
-
-  def initialize(name = "")
-    @playername = name
-    identify_user
-
-
-  end
-
-  def identify_user
-    @playername = ""
-    @playername = File::read( "playername.txt" )
-    if @playername == ""
-      print "No player detected, please enter name:"
-      @playername = get_response
-      File::open( 'playername.txt', 'w' ) do |f|
-        f << @playername
-      end
-    else
-      puts "Currently playing as: " + @playername
-      puts "Would you like to change the name? (Y)es or (N)o"
-      rename = get_response
-      if rename.upcase == "Y"
-        @playername = get_response("   New Name?")
-        File::open( 'playername.txt', 'w' ) do |f|
-          f << @playername
-        end
-      end
-    end
-  end
-
-  def get_response(prompt = "")
-    print prompt + "   "
-    gets.chomp
-  end
-end
 
 Game.new
