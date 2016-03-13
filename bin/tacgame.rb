@@ -6,7 +6,7 @@ class Game
     line_bar(3)
     @player_symbol = "@"
     @host = Player.new("playerone")
-    @turn_marker = true
+    @turn_marker = 1
     main_menu
   end
   def main_menu
@@ -74,47 +74,66 @@ class Game
     human_turn(@turn_marker)
   end
 
-  def human_turn(player)
+  def human_turn(player = 1)
     game_prompt
-    puts "Currently " + @host.playername.to_s + "'s turn.'"
+    if player == 1
+      puts "Currently " + @host.playername.to_s + "'s turn.'"
+      target = 1
+      symbol = @host.symbol
+    elsif player == 2
+      puts "Currently " + @guest.playername.to_s + "'s turn.'"
+      target = -1
+      symbol = @guest.symbol
+    end
     line_bar
     puts "Which space would you like to claim? (1 - 9)"
     line_bar
     move = get_response.to_i
     if move == 1 && @placement_chart[0] == 0
-      @plot_one = "  " + @player_symbol + "  "
-      @placement_chart[0] += 1
+      @plot_one = "  " + symbol + "  "
+      @placement_chart[0] = target
     elsif move == 2 && @placement_chart[1] == 0
-      @plot_two = "  " + @player_symbol + "  "
-      @placement_chart[1] += 1
+      @plot_two = "  " + symbol + "  "
+      @placement_chart[1] = target
     elsif move == 3 && @placement_chart[2] == 0
-      @plot_three = "  " + @player_symbol + "  "
-      @placement_chart[2] += 1
+      @plot_three = "  " + symbol + "  "
+      @placement_chart[2] = target
     elsif move == 4 && @placement_chart[3] == 0
-      @plot_four = "  " + @player_symbol + "  "
-      @placement_chart[3] += 1
+      @plot_four = "  " + symbol + "  "
+      @placement_chart[3] = target
     elsif move == 5 && @placement_chart[4] == 0
-      @plot_five = "  " + @player_symbol + "  "
-      @placement_chart[4] += 1
+      @plot_five = "  " + symbol + "  "
+      @placement_chart[4] = target
     elsif move == 6 && @placement_chart[5] == 0
-      @plot_six = "  " + @player_symbol + "  "
-      @placement_chart[5] += 1
+      @plot_six = "  " + symbol + "  "
+      @placement_chart[5] = target
     elsif move == 7 && @placement_chart[6] == 0
-      @plot_seven = "  " + @player_symbol + "  "
-      @placement_chart[6] += 1
+      @plot_seven = "  " + symbol + "  "
+      @placement_chart[6] = target
     elsif move == 8 && @placement_chart[7] == 0
-      @plot_eight = "  " + @player_symbol + "  "
-      @placement_chart[7] += 1
+      @plot_eight = "  " + symbol + "  "
+      @placement_chart[7] = target
     elsif move == 9 && @placement_chart[8] == 0
-      @plot_nine = "  " + @player_symbol + "  "
-      @placement_chart[8] += 1
+      @plot_nine = "  " + symbol + "  "
+      @placement_chart[8] = target
     else
       puts "INVALID SELECTION"
       interceptor
-      player_turn
+      human_turn(@turn_marker)
     end
-    evaluate_board("host")
-    computer_turn
+    if player == 1
+      evaluate_board("host")
+      if @versus_ai == true
+        computer_turn
+      else
+        @turn_marker += 1
+        human_turn(@turn_marker)
+      end
+    elsif player == 2
+      evaluate_board("guest")
+      @turn_marker -= 1
+      human_turn(@turn_marker)
+    end
   end
 
   def guest_turn
@@ -207,7 +226,7 @@ class Game
     line_bar
     interceptor
     evaluate_board("bot")
-    host_turn
+    human_turn
   end
 
   def evaluate_board(player)
