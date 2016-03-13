@@ -3,36 +3,15 @@ class Game
     system('clear')
     line_bar(3)
     @player_symbol = "@"
-    user_check
+    Player.new("playerone")
     main_menu
-  end
-
-  def user_check
-    @playername = ""
-    @playername = File::read( "playername.txt" )
-    if @playername == ""
-      print "No player detected, please enter name:"
-      @playername = get_response
-      File::open( 'playername.txt', 'w' ) do |f|
-        f << @playername
-      end
-    else
-      puts "Currently playing as: " + @playername
-      puts "Would you like to change the name? (Y)es or (N)o"
-      rename = get_response
-      if rename.upcase == "Y"
-        @playername = get_response("   New Name?")
-        File::open( 'playername.txt', 'w' ) do |f|
-          f << @playername
-        end
-      end
-    end
+    @playerone = playerone.name
   end
 
   def main_menu
     system ('clear')
     line_bar
-    puts "   Welcome back " + @playername + "!"
+    puts "   Welcome back " + @playerone.to_s + "!"
     line_bar(2)
     puts "        ARE YOU READY FOR TIC TAC TOE?!?!?"
     line_bar(2)
@@ -105,28 +84,42 @@ class Game
 
   def player_turn
     game_prompt
-    puts "Currently " + @playername + "'s turn.'"
+    puts "Currently " + @playerone.to_s + "'s turn.'"
     line_bar
     puts "Which space would you like to claim? (1 - 9)"
+    line_bar
     move = get_response.to_i
-    if move == 1
+    if move == 1 && @placement_chart[0] == false
       @plot_one = "  " + @player_symbol + "  "
-    elsif move == 2
+      @placement_chart[0] = true
+    elsif move == 2 && @placement_chart[1] == false
       @plot_two = "  " + @player_symbol + "  "
-    elsif move == 3
+      @placement_chart[1] = true
+    elsif move == 3 && @placement_chart[2] == false
       @plot_three = "  " + @player_symbol + "  "
-    elsif move == 4
+      @placement_chart[2] = true
+    elsif move == 4 && @placement_chart[3] == false
       @plot_four = "  " + @player_symbol + "  "
-    elsif move == 5
+      @placement_chart[3] = true
+    elsif move == 5 && @placement_chart[4] == false
       @plot_five = "  " + @player_symbol + "  "
-    elsif move == 6
+      @placement_chart[4] = true
+    elsif move == 6 && @placement_chart[5] == false
       @plot_six = "  " + @player_symbol + "  "
-    elsif move == 7
+      @placement_chart[5] = true
+    elsif move == 7 && @placement_chart[6] == false
       @plot_seven = "  " + @player_symbol + "  "
-    elsif move == 8
+      @placement_chart[6] = true
+    elsif move == 8 && @placement_chart[7] == false
       @plot_eight = "  " + @player_symbol + "  "
-    elsif move == 9
+      @placement_chart[7] = true
+    elsif move == 9 && @placement_chart[8] == false
       @plot_nine = "  " + @player_symbol + "  "
+      @placement_chart[8] = true
+    else
+      puts "INVALID SELECTION"
+      interceptor
+      player_turn
     end
     computer_turn
   end
@@ -135,29 +128,53 @@ class Game
     game_prompt
     puts "Currently Computer's turn.'"
     line_bar
-    puts "Anything to continue"
     move = rand(1..9)
-    case move
-    when 1
+    if move == 1 && @placement_chart[0] == false
       @plot_one = "  " + "$" + "  "
-    when 2
+      @placement_chart[0] = true
+      puts "Computer chooses place " + move.to_s
+    elsif move == 2 && @placement_chart[1] == false
       @plot_two = "  " + "$" + "  "
-    when 3
+      @placement_chart[1] = true
+      puts "Computer chooses place " + move.to_s
+    elsif move == 3 && @placement_chart[2] == false
       @plot_three = "  " + "$" + "  "
-    when 4
+      @placement_chart[2] = true
+      puts "Computer chooses place " + move.to_s
+    elsif move == 4 && @placement_chart[3] == false
       @plot_four = "  " + "$" + "  "
-    when 5
+      @placement_chart[3] = true
+      puts "Computer chooses place " + move.to_s
+    elsif move == 5 && @placement_chart[4] == false
       @plot_five = "  " + "$" + "  "
-    when 6
+      @placement_chart[4] = true
+      puts "Computer chooses place " + move.to_s
+    elsif move == 6 && @placement_chart[5] == false
       @plot_six = "  " + "$" + "  "
-    when 7
+      @placement_chart[5] = true
+      puts "Computer chooses place " + move.to_s
+    elsif move == 7 && @placement_chart[6] == false
       @plot_seven = "  " + "$" + "  "
-    when 8
+      @placement_chart[6] = true
+      puts "Computer chooses place " + move.to_s
+    elsif move == 8 && @placement_chart[7] == false
       @plot_eight = "  " + "$" + "  "
-    when 9
+      @placement_chart[7] = true
+      puts "Computer chooses place " + move.to_s
+    elsif move == 9 && @placement_chart[8] == false
       @plot_nine = "  " + "$" + "  "
+      @placement_chart[8] = true
+      puts "Computer chooses place " + move.to_s
+    else
+      computer_turn
     end
+    line_bar
+    interceptor
     player_turn
+  end
+
+  def evaluate_board
+
   end
 
   def game_prompt
@@ -189,6 +206,11 @@ class Game
     line_bar(2)
   end
 
+  def interceptor
+    puts "Press enter to continue"
+    get_response
+  end
+
   def line_bar(num = 1)
     num.times do
       puts "-" * 50
@@ -207,7 +229,11 @@ end
 
 class Player
 
-  def initialize
+  attr_accessor :playername, :score
+
+  def initialize(name = "")
+    @playername = name
+    identify_user
 
   end
 
@@ -231,6 +257,11 @@ class Player
         end
       end
     end
+  end
+
+  def get_response(prompt = "")
+    print prompt + "   "
+    gets.chomp
   end
 end
 
