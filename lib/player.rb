@@ -3,13 +3,12 @@ class Player
   attr_accessor :playername, :score, :symbol
 
   def initialize(slot = "")
-    @score = 0
+    @score = {}
     @playername = ''
     @position = slot
     @symbol = ""
     identify_user
     load_symbol
-
   end
 
   def identify_user
@@ -55,7 +54,7 @@ class Player
       line_bar
       puts "1 = !   2 = @   3 = %   4 = 🙊   5 = 🐙"
       puts
-      puts "6 = 🐗   7 = ⛄️   8 = 🚀   9 = 🔮"
+      puts "6 = 🐗   7 = ⛄️   8 = 🚀   9 = 🔮   0 = 👹"
       line_bar
       choice = get_response("Choose a symbol:").to_i
       if choice == 1
@@ -76,6 +75,8 @@ class Player
         @symbol = "🚀"
       elsif choice == 9
         @symbol = "🔮"
+      elsif choice == 0
+        @symbol = "👹"
       else
         puts "Please choose one of the options"
         load_symbol
@@ -98,8 +99,20 @@ class Player
     end
   end
 
-  def increase_score
-
+  def increase_score # NEVER COMPLETED - RELIC
+    unless File.exist?('../users/scorechart.txt')
+      `touch ../users/scorechart.txt`
+    end
+    the_board = File::read['../users/scorechart.txt'.split("\n").map{|i|i.split(', ')}]
+    if the_board.include?(@playername)
+      the_board[@playername] += 1
+    else
+      constructor = {@playername => @score}
+      the_board.merge(constructor)
+    end
+    scanner = File::open('../users/scorechart.txt')
+    the_board.each do |name, score|
+    end
   end
 
   def line_bar(num = 1)
