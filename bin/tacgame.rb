@@ -16,11 +16,11 @@ class Game
     line_bar(2)
     puts "        ARE YOU READY FOR TIC TAC TOE?!?!?"
     line_bar(2)
-    puts "    1 - New Game Versus AI(BETA)"
+    puts "    1 - New Game Versus AI(Ver 0.95)"
     line_bar
-    puts "    2 - New Game Versus P2(ALPHA)"
+    puts "    2 - New Game Versus P2(BETA)"
     line_bar
-    puts "    3 - Show Scoreboard(Inactive)"
+    puts "    3 - Show Scoreboard(ALPHA)"
     line_bar
     puts "    4 - Player Options(Inactive)"
     line_bar
@@ -136,49 +136,6 @@ class Game
     end
   end
 
-  def guest_turn
-    game_prompt
-    puts "Currently " + @guest.playername.to_s + "'s turn.'"
-    line_bar
-    puts "Which space would you like to claim? (1 - 9)"
-    line_bar
-    move = get_response.to_i
-    if move == 1 && @placement_chart[0] == 0
-      @plot_one = "  " + @player_symbol + "  "
-      @placement_chart[0] += -1
-    elsif move == 2 && @placement_chart[1] == 0
-      @plot_two = "  " + @player_symbol + "  "
-      @placement_chart[1] += -1
-    elsif move == 3 && @placement_chart[2] == 0
-      @plot_three = "  " + @player_symbol + "  "
-      @placement_chart[2] += -1
-    elsif move == 4 && @placement_chart[3] == 0
-      @plot_four = "  " + @player_symbol + "  "
-      @placement_chart[3] += -1
-    elsif move == 5 && @placement_chart[4] == 0
-      @plot_five = "  " + @player_symbol + "  "
-      @placement_chart[4] += -1
-    elsif move == 6 && @placement_chart[5] == 0
-      @plot_six = "  " + @player_symbol + "  "
-      @placement_chart[5] += -1
-    elsif move == 7 && @placement_chart[6] == 0
-      @plot_seven = "  " + @player_symbol + "  "
-      @placement_chart[6] += -1
-    elsif move == 8 && @placement_chart[7] == 0
-      @plot_eight = "  " + @player_symbol + "  "
-      @placement_chart[7] += -1
-    elsif move == 9 && @placement_chart[8] == 0
-      @plot_nine = "  " + @player_symbol + "  "
-      @placement_chart[8] += -1
-    else
-      puts "INVALID SELECTION"
-      interceptor
-      guest_turn
-    end
-    evaluate_board("host")
-    computer_turn
-  end
-
   def computer_turn
     game_prompt
     puts "Currently Computer's turn.'"
@@ -275,7 +232,19 @@ class Game
         @placement_chart[6] == target
         victory_screen(player)
     end
+    tie_check
+  end
 
+  def tie_check
+    taken = 0
+    @placement_chart.each do |x|
+      if x != 0
+        taken += 1
+      end
+    end
+    if taken == 9
+      tie_screen
+    end
   end
 
   def game_prompt
@@ -307,14 +276,32 @@ class Game
     line_bar(2)
   end
 
+  def tie_screen
+    system ('clear')
+    line_bar(2)
+    place_space
+    puts "TIE GAME - NO MOVES AVAILABLE"
+    line_bar(2)
+    place_space
+    puts "><><><><><><><><><><><><><><><><><><"
+    line_bar(2)
+    place_space
+    puts "RETURNING TO MENU!"
+    line_bar
+    interceptor
+    main_menu
+  end
+
   def victory_screen(winner)
     system ('clear')
     line_bar(3)
     print " " * 12
     if winner == "host"
       print @host.playername
+      # @host.increase_score
     elsif winner == "guest"
       print @guest.playername
+      # @guest.increase_score
     elsif winner == "bot"
       print "Computer"
     else
