@@ -12,6 +12,7 @@ class Game
     @bot_symbol = "💩"
     main_menu
   end
+
   def main_menu
     @screener.main_menu(@host.playername)
     next_step = get_response.to_i
@@ -26,7 +27,9 @@ class Game
     elsif next_step == 4
       options_menu
     else
-      exit
+      puts "Invalid Selection"
+      interceptor
+      main_menu
     end
   end
 
@@ -269,10 +272,8 @@ class Game
     print " " * 12
     if winner == "host"
       print @host.playername
-      # @host.increase_score
     elsif winner == "guest"
       print @guest.playername
-      # @guest.increase_score
     elsif winner == "bot"
       print "Computer"
     else
