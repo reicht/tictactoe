@@ -6,9 +6,10 @@ class Game
     system('clear')
     @screener = Screens.new
     line_bar(3)
-    @player_symbol = "@"
+    @player_symbol = ""
     @host = Player.new("playerone")
     @turn_marker = 1
+    @bot_symbol = "💩"
     main_menu
   end
   def main_menu
@@ -122,39 +123,39 @@ class Game
     line_bar
     move = rand(1..9)
     if move == 1 && @placement_chart[0] == 0
-      @plot_one = "  " + "$" + "  "
+      @plot_one = "  " + @bot_symbol.to_s + "  "
       @placement_chart[0] -= 1
       puts "Computer chooses place " + move.to_s
     elsif move == 2 && @placement_chart[1] == 0
-      @plot_two = "  " + "$" + "  "
+      @plot_two = "  " + @bot_symbol.to_s + "  "
       @placement_chart[1] -= 1
       puts "Computer chooses place " + move.to_s
     elsif move == 3 && @placement_chart[2] == 0
-      @plot_three = "  " + "$" + "  "
+      @plot_three = "  " + @bot_symbol.to_s + "  "
       @placement_chart[2] -= 1
       puts "Computer chooses place " + move.to_s
     elsif move == 4 && @placement_chart[3] == 0
-      @plot_four = "  " + "$" + "  "
+      @plot_four = "  " + @bot_symbol.to_s + "  "
       @placement_chart[3] -= 1
       puts "Computer chooses place " + move.to_s
     elsif move == 5 && @placement_chart[4] == 0
-      @plot_five = "  " + "$" + "  "
+      @plot_five = "  " + @bot_symbol.to_s + "  "
       @placement_chart[4] -= 1
       puts "Computer chooses place " + move.to_s
     elsif move == 6 && @placement_chart[5] == 0
-      @plot_six = "  " + "$" + "  "
+      @plot_six = "  " + @bot_symbol.to_s + "  "
       @placement_chart[5] -= 1
       puts "Computer chooses place " + move.to_s
     elsif move == 7 && @placement_chart[6] == 0
-      @plot_seven = "  " + "$" + "  "
+      @plot_seven = "  " + @bot_symbol.to_s + "  "
       @placement_chart[6] -= 1
       puts "Computer chooses place " + move.to_s
     elsif move == 8 && @placement_chart[7] == 0
-      @plot_eight = "  " + "$" + "  "
+      @plot_eight = "  " + @bot_symbol.to_s + "  "
       @placement_chart[7] -= 1
       puts "Computer chooses place " + move.to_s
     elsif move == 9 && @placement_chart[8] == 0
-      @plot_nine = "  " + "$" + "  "
+      @plot_nine = "  " + @bot_symbol.to_s + "  "
       @placement_chart[8] -= 1
       puts "Computer chooses place " + move.to_s
     else
@@ -288,19 +289,59 @@ class Game
 
   def options_menu
     @screener.options_menu
-    response = get_response.to_i
-    if response == 1
+    response = get_response("Selection?")
+    if response.to_i == 1
       @host.identify_user
       @host.load_symbol
-    elsif response == 2
+    elsif response.to_i == 2
       if @guest.nil?
         @guest = Player.new("playertwo")
       else
         @guest.identify_user
         @guest.load_symbol
       end
+    elsif response.to_i == 3
+      line_bar
+      puts "1 = 👻   2 = 😈   3 = 🐼   4 = 🎃   5 = 🍄"
+      puts
+      puts "6 = 🐳   7 = 🍕   8 = 👾   9 = 🚒   0 = 💔"
+      line_bar
+      choice = get_response("Which should the computer use?").to_i
+      if choice == 1
+        @bot_symbol = "👻"
+      elsif choice == 2
+        @bot_symbol = "😈"
+      elsif choice == 3
+        @bot_symbol = "🐼"
+      elsif choice == 4
+        @bot_symbol = "🎃"
+      elsif choice == 5
+        @bot_symbol = "🍄"
+      elsif choice == 6
+        @bot_symbol = "🐳"
+      elsif choice == 7
+        @bot_symbol = "🍕"
+      elsif choice == 8
+        @bot_symbol = "👾"
+      elsif choice == 9
+        @bot_symbol = "🚒"
+      elsif choice == 0
+        @bot_symbol = "💔"
+      else
+        puts "Please choose one of the options"
+        interceptor
+        options_menu
+      end
+    elsif response.upcase == "M"
+      main_menu
+    elsif response.upcase == "X"
+      exit
+    else
+      puts "Invalid Selection"
+      interceptor
+      options_menu
     end
-    main_menu
+    options_menu
   end
 
   def interceptor
