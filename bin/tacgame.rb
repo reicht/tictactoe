@@ -1,8 +1,10 @@
 require_relative '../lib/player.rb'
+require_relative '../lib/screens.rb'
 
 class Game
   def initialize
     system('clear')
+    @screener = Screens.new
     line_bar(3)
     @player_symbol = "@"
     @host = Player.new("playerone")
@@ -10,22 +12,7 @@ class Game
     main_menu
   end
   def main_menu
-    system ('clear')
-    line_bar
-    puts "   Welcome back " + @host.playername.to_s + "!"
-    line_bar(2)
-    puts "        ARE YOU READY FOR TIC TAC TOE?!?!?"
-    line_bar(2)
-    puts "    1 - New Game Versus AI(Ver 0.95)"
-    line_bar
-    puts "    2 - New Game Versus P2(Ver 0.95)"
-    line_bar
-    puts "    3 - Show Scoreboard(INACTIVE)"
-    line_bar
-    puts "    4 - Player Options(ALPHA)"
-    line_bar
-    puts "    X - E(X)it The Game"
-    line_bar
+    @screener.main_menu(@host.playername)
     next_step = get_response.to_i
     if next_step == 1
       @versus_ai = true
@@ -43,17 +30,10 @@ class Game
   end
 
   def multi_lobby
-    system ('clear')
-    puts
-    line_bar(2)
-    puts "Entering Multi-Player Mode"
-    line_bar
-    puts
-    puts "Configuring Player Two"
-    puts
-    line_bar
-    puts
-    @guest = Player.new("playertwo")
+    @screener.multi_lobby
+    if @guest.nil?
+      @guest = Player.new("playertwo")
+    end
     setup_board
   end
 
@@ -277,17 +257,7 @@ class Game
   end
 
   def tie_screen
-    system ('clear')
-    line_bar(2)
-    place_space
-    puts "TIE GAME - NO MOVES AVAILABLE"
-    line_bar(2)
-    place_space
-    puts "><><><><><><><><><><><><><><><><><><"
-    line_bar(2)
-    place_space
-    puts "RETURNING TO MENU!"
-    line_bar
+    @screener.tie_screen
     interceptor
     main_menu
   end
@@ -317,25 +287,19 @@ class Game
   end
 
   def options_menu
-    system ('clear')
-    line_bar(2)
-    place_space
-    puts "OPTIONS MENU - MODIFY THE GAME"
-    line_bar(2)
-    place_space
-    puts "PLAYER OPTIONS"
-    line_bar
-    place_space
-    puts "1  -  Configure Player One"
-    place_space
-    puts "         Name and Symbol"
-    line_bar
-    place_space
-    puts "2  -  Configure Player Two"
-    place_space
-    puts "         Name and Symbol"
-    line_bar(2)
-    interceptor
+    @screener.options_menu
+    response = get_response.to_i
+    if response == 1
+      @host.identify_user
+      @host.load_symbol
+    elsif response == 2
+      if @guest.nil?
+        @guest = Player.new("playertwo")
+      else
+        @guest.identify_user
+        @guest.load_symbol
+      end
+    end
     main_menu
   end
 
@@ -359,6 +323,5 @@ class Game
     gets.chomp
   end
 end
-
 
 Game.new
