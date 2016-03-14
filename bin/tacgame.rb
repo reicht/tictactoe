@@ -18,11 +18,11 @@ class Game
     line_bar(2)
     puts "    1 - New Game Versus AI(Ver 0.95)"
     line_bar
-    puts "    2 - New Game Versus P2(BETA)"
+    puts "    2 - New Game Versus P2(Ver 0.95)"
     line_bar
-    puts "    3 - Show Scoreboard(ALPHA)"
+    puts "    3 - Show Scoreboard(INACTIVE)"
     line_bar
-    puts "    4 - Player Options(Inactive)"
+    puts "    4 - Player Options(ALPHA)"
     line_bar
     puts "    X - E(X)it The Game"
     line_bar
@@ -36,7 +36,7 @@ class Game
     elsif next_step == 3
       puts "UNDEVELOPED"
     elsif next_step == 4
-      puts "UNDEVELOPED"
+      options_menu
     else
       exit
     end
@@ -312,6 +312,29 @@ class Game
     print " " * 6
     puts "LOGGING SCORES AND RETURNING TO MENU"
     line_bar(3)
+    interceptor
+    main_menu
+  end
+
+  def options_menu
+    system ('clear')
+    line_bar(2)
+    place_space
+    puts "OPTIONS MENU - MODIFY THE GAME"
+    line_bar(2)
+    place_space
+    puts "PLAYER OPTIONS"
+    line_bar
+    place_space
+    puts "1  -  Configure Player One"
+    place_space
+    puts "         Name and Symbol"
+    line_bar
+    place_space
+    puts "2  -  Configure Player Two"
+    place_space
+    puts "         Name and Symbol"
+    line_bar(2)
     interceptor
     main_menu
   end
